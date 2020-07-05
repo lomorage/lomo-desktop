@@ -11,13 +11,14 @@ const mkdir = util.promisify(fs.mkdir)
 const writeFile = util.promisify(fs.writeFile)
 
 
+const testPhotosDir = 'submodules/test-data/photos'
 const testBaseDir = 'dist-test'
 
 
 testImportScanner('simple import',
     async testDir => {
-        await copyFile('test-data/photos/IMG_9700.JPG', `${testDir}/IMG_9700.JPG`)
-        await copyFile('test-data/photos/800/door-knocker.jpg', `${testDir}/door-knocker.jpg`)
+        await copyFile(`${testPhotosDir}/IMG_9700.JPG`, `${testDir}/IMG_9700.JPG`)
+        await copyFile(`${testPhotosDir}/800/door-knocker.jpg`, `${testDir}/door-knocker.jpg`)
     },
     async ({ testDir, storedPhotos, finalProgress }) => {
         expect(finalProgress).toEqual({
@@ -40,12 +41,6 @@ testImportScanner('simple import',
                 master_is_raw: 0,
                 edited_width: 5184,
                 edited_height: 3456,
-                orientation: 1,
-                camera: 'Canon EOS 700D',
-                exposure_time: 0.016666666666666666,
-                iso: 1600,
-                focal_length: 55,
-                aperture: 5.6,
                 flag: 0,
                 trashed: 0
             },
@@ -58,12 +53,6 @@ testImportScanner('simple import',
                 master_is_raw: 0,
                 edited_width: 800,
                 edited_height: 533,
-                orientation: 1,
-                camera: 'Olympus E-M10',
-                exposure_time: 0.005,
-                iso: 200,
-                focal_length: 31,
-                aperture: 5.6,
                 flag: 0,
             }
         ])
@@ -84,12 +73,6 @@ testImportScanner('import png',
                 master_is_raw: 0,
                 edited_width: 256,
                 edited_height: 256,
-                orientation: 1,
-                camera: undefined,
-                exposure_time: undefined,
-                iso: undefined,
-                focal_length: undefined,
-                aperture: undefined,
                 flag: 0
             }
         ])
@@ -98,8 +81,8 @@ testImportScanner('import png',
 
 testImportScanner('import jpg',
     async testDir => {
-        await copyFile('test-data/photos/jpg/Apple_iPhone_XR_landscape.jpg', `${testDir}/Apple_iPhone_XR_landscape.jpg`)
-        await copyFile('test-data/photos/jpg/Apple_iPhone_XR_portrait.jpg',  `${testDir}/Apple_iPhone_XR_portrait.jpg`)
+        await copyFile(`${testPhotosDir}/jpg/Apple_iPhone_XR_landscape.jpg`, `${testDir}/Apple_iPhone_XR_landscape.jpg`)
+        await copyFile(`${testPhotosDir}/jpg/Apple_iPhone_XR_portrait.jpg`,  `${testDir}/Apple_iPhone_XR_portrait.jpg`)
     },
     async ({ testDir, storedPhotos }) => {
         expectPhotos(storedPhotos, [
@@ -113,12 +96,6 @@ testImportScanner('import jpg',
                 edited_height: 2866,
                 date_section: '2019-09-12',
                 created_at: 1568305337000,
-                orientation: 1,
-                camera: 'Apple iPhone XR',
-                exposure_time: 0.0007407407407407407,
-                iso: 25,
-                focal_length: 4.25,
-                aperture: 1.8,
                 flag: 0,
                 trashed: 0
             },
@@ -132,12 +109,29 @@ testImportScanner('import jpg',
                 edited_height: 640,
                 date_section: '2019-07-29',
                 created_at: 1564394038000,
-                orientation: 6,
-                camera: 'Apple iPhone XR',
-                exposure_time: 0.008264462809917356,
-                iso: 64,
-                focal_length: 4.25,
-                aperture: 1.8,
+                flag: 0,
+                trashed: 0
+            }
+        ])
+    })
+
+
+testImportScanner('import heic',
+    async testDir => {
+        await copyFile(`${testPhotosDir}/heic/Apple_iPhone_XR_portrait.HEIC`, `${testDir}/Apple_iPhone_XR_portrait.HEIC`)
+    },
+    async ({ testDir, storedPhotos }) => {
+        expectPhotos(storedPhotos, [
+            {
+                master_dir: 'dist-test/import_heic',
+                master_filename: 'Apple_iPhone_XR_portrait.HEIC',
+                master_width: 3024,
+                master_height: 4032,
+                master_is_raw: 0,
+                edited_width: 3024,
+                edited_height: 4032,
+                date_section: '2019-07-31',
+                created_at: 1564576474000,
                 flag: 0,
                 trashed: 0
             }
@@ -148,7 +142,7 @@ testImportScanner('import jpg',
 testImportScanner('import Picasa crop and tilt',
     async testDir => {
         await Promise.all([
-            copyFile('test-data/photos/800/ice-cubes.jpg', `${testDir}/ice-cubes.jpg`),
+            copyFile(`${testPhotosDir}/800/ice-cubes.jpg`, `${testDir}/ice-cubes.jpg`),
             writeFile(`${testDir}/.picasa.ini`,
                 '[ice-cubes.jpg]\n' +
                 'rotate=rotate(1)\n' +
@@ -169,12 +163,6 @@ testImportScanner('import Picasa crop and tilt',
                 edited_height: 153,
                 date_section: '2018-06-28',
                 created_at: 1530207426000,
-                orientation: 1,
-                camera: 'FUJIFILM X-T2',
-                exposure_time: 0.05,
-                iso: 200,
-                focal_length: 80,
-                aperture: 11,
                 flag: 0,
                 trashed: 0
             }
@@ -192,7 +180,7 @@ testImportScanner('import Picasa originals #1',
 
         await mkdir(`${testDir}/.picasaoriginals`)
         await Promise.all([
-            copyFile('test-data/photos/800/ice-cubes.jpg', `${testDir}/.picasaoriginals/ice-cubes.jpg`),
+            copyFile(`${testPhotosDir}/800/ice-cubes.jpg`, `${testDir}/.picasaoriginals/ice-cubes.jpg`),
             writeFile(`${testDir}/.picasaoriginals/.picasa.ini`,
                 '[ice-cubes.jpg]\n' +
                 'filters=crop64=1,b3d66180e8f5bad5;finetune2=1,0.000000,0.000000,0.480000,00000000,0.000000;\n' +
@@ -201,7 +189,7 @@ testImportScanner('import Picasa originals #1',
                 'width=800\n' +
                 'height=533\n' +
                 'textactive=0\n'),
-            copyFile('test-data/photos/800/ice-cubes.jpg', `${testDir}/ice-cubes.jpg`),
+            copyFile(`${testPhotosDir}/800/ice-cubes.jpg`, `${testDir}/ice-cubes.jpg`),
             writeFile(`${testDir}/.picasa.ini`,
                 '[ice-cubes.jpg]\n' +
                 'backuphash=15177\n'),
@@ -219,12 +207,6 @@ testImportScanner('import Picasa originals #1',
                 edited_height: 186,
                 date_section: '2018-06-28',
                 created_at: 1530207426000,
-                orientation: 1,
-                camera: 'FUJIFILM X-T2',
-                exposure_time: 0.05,
-                iso: 200,
-                focal_length: 80,
-                aperture: 11,
                 flag: 0,
                 trashed: 0
             }
@@ -245,7 +227,7 @@ testImportScanner('import Picasa originals #2',
 
         await mkdir(`${testDir}/.picasaoriginals`)
         await Promise.all([
-            copyFile('test-data/photos/800/ice-cubes.jpg', `${testDir}/.picasaoriginals/ice-cubes.jpg`),
+            copyFile(`${testPhotosDir}/800/ice-cubes.jpg`, `${testDir}/.picasaoriginals/ice-cubes.jpg`),
             writeFile(`${testDir}/.picasaoriginals/.picasa.ini`,
                 '[ice-cubes.jpg]\r\n' +
                 'filters=tilt=1,1.000000,0.000000;\r\n' +
@@ -253,7 +235,7 @@ testImportScanner('import Picasa originals #2',
                 'width=800\r\n' +
                 'height=533\r\n' +
                 'textactive=0\r\n'),
-            copyFile('test-data/photos/800/ice-cubes.jpg', `${testDir}/ice-cubes.jpg`),
+            copyFile(`${testPhotosDir}/800/ice-cubes.jpg`, `${testDir}/ice-cubes.jpg`),
             writeFile(`${testDir}/.picasa.ini`,
                 '[ice-cubes.jpg]\r\n' +
                 'backuphash=56337\r\n' +
@@ -275,12 +257,6 @@ testImportScanner('import Picasa originals #2',
                 edited_height: 219,
                 date_section: '2018-06-28',
                 created_at: 1530207426000,
-                orientation: 1,
-                camera: 'FUJIFILM X-T2',
-                exposure_time: 0.05,
-                iso: 200,
-                focal_length: 80,
-                aperture: 11,
                 flag: 1   // Important! This comes from the parent directory
             }
         ])

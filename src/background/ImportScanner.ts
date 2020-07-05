@@ -18,8 +18,10 @@ import { parseImageDataUrl } from 'background/util/NodeUtil'
 const getImageSize = promisify(getImageSizeWithCallback)
 
 
+const acceptedExtensions = [ ...config.acceptedNonRawExtensions, ...config.acceptedHeicExtensions, ...config.acceptedRawExtensions ]
+
 const acceptedRawExtensionRE = new RegExp(`\\.(${config.acceptedRawExtensions.join('|')})$`, 'i')
-const acceptedExtensionRE = new RegExp(`\\.(${config.acceptedNonRawExtensions.join('|')}|${config.acceptedRawExtensions.join('|')})$`, 'i')
+const acceptedExtensionRE = new RegExp(`\\.(${acceptedExtensions.join('|')})$`, 'i')
 
 const uiUpdateInterval = 200  // In ms
 
@@ -371,7 +373,6 @@ export default class ImportScanner {
             const switchMasterSides = (metaData.orientation == ExifOrientation.Left) || (metaData.orientation == ExifOrientation.Right)
             let master_width = switchMasterSides ? metaData.imgHeight : metaData.imgWidth
             let master_height = switchMasterSides ? metaData.imgWidth : metaData.imgHeight
-            let orientation = metaData.orientation
 
             let createdAt = metaData.createdAt || fileStats.ctime
 
@@ -414,7 +415,7 @@ export default class ImportScanner {
                         console.error(`Received invalid photo size for ${masterFullPath}:`, imageInfo)
                         throw new Error('Received invalid photo size')
                     }
-                    orientation = imageInfo.orientation || ExifOrientation.Up
+                    const orientation = imageInfo.orientation || ExifOrientation.Up
                     const switchMasterSides = (orientation == ExifOrientation.Left) || (orientation == ExifOrientation.Right)
                     master_width  = switchMasterSides ? imageInfo.height : imageInfo.width
                     master_height = switchMasterSides ? imageInfo.width : imageInfo.height
@@ -458,12 +459,6 @@ export default class ImportScanner {
                 created_at: createdAt.getTime(),
                 updated_at: fileStats.mtime.getTime(),
                 imported_at: this.importStartTime,
-                orientation: orientation || ExifOrientation.Up,
-                camera: metaData.camera,
-                exposure_time: metaData.exposureTime,
-                iso: metaData.iso,
-                focal_length: metaData.focalLength,
-                aperture: metaData.aperture,
                 flag: photoWork.flagged ? 1 : 0,
                 trashed: 0,
             }
