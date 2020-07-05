@@ -29,7 +29,7 @@ Build from sources
 
 Prerequirements:
 
-  - Install yarn (Mac OS: `brew install yarn`)
+  - Install yarn (Mac OS: `brew install yarn` Windows OS: `choco install yarn`)
     - **Note:** It's important to use yarn instead of npm for
       [getting smaller distributable packages](https://github.com/electron-userland/electron-builder/issues/1147#issuecomment-276284477)
   - Mac OS: Install Xcode and start it once. You can close Xcode after the "required components" have been installed.
@@ -40,8 +40,28 @@ Fetch git submodules:
 
 Fetch dependencies and build and start Picturama:
 
+**MacOS**
     yarn
     yarn start
+
+**Windows**
+
+    npm install -g win-node-env
+    
+    copy /submodules/win-node-dev/PICTURAMA_DEV_MODE.cmd to your %npm% path like:
+    c:\Users\%username%\AppData\Roaming\npm\
+
+    yarn
+    yarn start
+
+
+**Notes**
+> If you meet the issue like below on Windows:
+please go to: https://github.com/laggingreflex/win-node-env
+    
+    'NODE_ENV' is not recognized as an internal or external command, operable program or batch file.
+
+
 
 If you get an error with `node-gyp rebuild` then delete `~/.node-gyp` and try again:
 

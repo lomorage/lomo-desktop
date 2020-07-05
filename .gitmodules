@@ -4,3 +4,6 @@
 [submodule "test-data"]
 	path = test-data
 	url = https://github.com/picturama/test-data.git
+[submodule "submodules/win-node-env"]
+	path = submodules/win-node-env
+	url = git@github.com:aisnote/win-node-env.git
