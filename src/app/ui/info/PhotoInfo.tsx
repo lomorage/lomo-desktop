@@ -1,4 +1,5 @@
-import { clipboard, shell } from 'electron'
+import isElectron from 'is-electron';
+// import { clipboard, shell } from 'electron'
 import classNames from 'classnames'
 import React from 'react'
 import { Button, Icon, NonIdealState, Popover, Position, Classes, Menu, MenuItem } from '@blueprintjs/core'
@@ -130,20 +131,30 @@ export default class PhotoInfo extends React.Component<Props, State> {
 
     private showPhotoInFolder() {
         if (this.props.photo) {
-            shell.showItemInFolder(getMasterPath(this.props.photo))
+            if(isElectron()) {
+                // shell.showItemInFolder(getMasterPath(this.props.photo))
+            }
+            
+
         }
     }
 
     private copyPhotoPath() {
         if (this.props.photo) {
-            clipboard.writeText(getMasterPath(this.props.photo))
+            if (isElectron()) {
+                // clipboard.writeText(getMasterPath(this.props.photo))
+            }
+            
         }
     }
 
     private copyCoordinates() {
         const coordinates = this.getCoordinates()
         if (coordinates) {
-            clipboard.writeText(formatLatLon(coordinates))
+            if (isElectron()) {
+                // clipboard.writeText(formatLatLon(coordinates))
+            }
+            
         }
     }
 

@@ -1,10 +1,14 @@
-import { ipcRenderer } from 'electron'
+import isElectron from 'is-electron';
+
+// import { ipcRenderer } from 'electron'
 
 import { UiConfig, Settings, PhotoSet, PhotoExportOptions, IpcErrorInfo, MetaData, ExifData } from 'common/CommonTypes'
 import { PhotoId, Photo, PhotoDetail, PhotoWork, PhotoFilter, PhotoSection, PhotoSectionId, Tag } from 'common/CommonTypes'
 import { assertRendererProcess } from 'common/util/ElectronUtil'
 import { decodeIpcError } from 'common/util/IpcUtil'
 
+ 
+console.log(isElectron()); 
 
 assertRendererProcess()
 
@@ -30,18 +34,22 @@ export default {
         if (isInitialized) {
             throw new Error('BackgroundClient is already initialized')
         }
+
         isInitialized = true
-        ipcRenderer.on('onBackgroundActionDone', (event, callId: number, error: IpcErrorInfo | null, result: any | null) => {
-            const callInfo = pendingCalls[callId]
-            delete pendingCalls[callId]
-            if (callInfo) {
-                if (error) {
-                    callInfo.reject(decodeIpcError(error))
-                } else {
-                    callInfo.resolve(result)
-                }
-            }
-        })
+
+        if (!isElectron()) {
+            // ipcRenderer.on('onBackgroundActionDone', (event, callId: number, error: IpcErrorInfo | null, result: any | null) => {
+            //     const callInfo = pendingCalls[callId]
+            //     delete pendingCalls[callId]
+            //     if (callInfo) {
+            //         if (error) {
+            //             callInfo.reject(decodeIpcError(error))
+            //         } else {
+            //             callInfo.resolve(result)
+            //         }
+            //     }
+            // })
+        }
     },
 
     waitForBackgroundReady(): Promise<void> {
@@ -158,6 +166,9 @@ async function callOnBackground(action: string, params: any = null): Promise<any
 
     return new Promise<any>((resolve, reject) => {
         pendingCalls[callId] = { resolve, reject }
-        ipcRenderer.send('executeBackgroundAction', callId, action, params)
+
+        if (!isElectron()) {
+            // ipcRenderer.send('executeBackgroundAction', callId, action, params)
+        }
     })
 }

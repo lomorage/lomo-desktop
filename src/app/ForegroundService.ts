@@ -1,4 +1,5 @@
-import { ipcRenderer } from 'electron'
+import isElectron from 'is-electron';
+// import { ipcRenderer } from 'electron'
 
 import { Device } from 'common/CommonTypes'
 import { assertRendererProcess } from 'common/util/ElectronUtil'
@@ -16,22 +17,26 @@ assertRendererProcess()
 
 
 export function init() {
-    ipcRenderer.on('executeForegroundAction', (event, callId: number, action: string, params: any) => {
-        executeForegroundAction(action, params)
-            .then(result => {
-                ipcRenderer.send('onForegroundActionDone', callId, null, result)
-            },
-            error => {
-                ipcRenderer.send('onForegroundActionDone', callId, encodeIpcError(error), null)
-            })
-    })
+    if (isElectron()) {
 
-    // TODO: Revive Legacy code of 'version' feature
-    //ipcRenderer.on('new-version', (event, version: any /* Type should be `Version`, but it doesn't work */) => updatePhotoVersion(version))
+        
+        // ipcRenderer.on('executeForegroundAction', (event, callId: number, action: string, params: any) => {
+        //     executeForegroundAction(action, params)
+        //         .then(result => {
+        //             ipcRenderer.send('onForegroundActionDone', callId, null, result)
+        //         },
+        //             error => {
+        //                 ipcRenderer.send('onForegroundActionDone', callId, encodeIpcError(error), null)
+        //             })
+        // })
 
-    ipcRenderer.on('scanned-devices', (event, devices: Device[]) => store.dispatch(initDevicesAction(devices)))
-    ipcRenderer.on('add-device', (event, device: Device) => store.dispatch(addDeviceAction(device)))
-    ipcRenderer.on('remove-device', (event, device: Device) => store.dispatch(removeDeviceAction(device)))
+        // // TODO: Revive Legacy code of 'version' feature
+        // //ipcRenderer.on('new-version', (event, version: any /* Type should be `Version`, but it doesn't work */) => updatePhotoVersion(version))
+
+        // ipcRenderer.on('scanned-devices', (event, devices: Device[]) => store.dispatch(initDevicesAction(devices)))
+        // ipcRenderer.on('add-device', (event, device: Device) => store.dispatch(addDeviceAction(device)))
+        // ipcRenderer.on('remove-device', (event, device: Device) => store.dispatch(removeDeviceAction(device)))
+    }
 }
 
 

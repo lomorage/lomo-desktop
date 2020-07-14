@@ -60,7 +60,8 @@
     "release": "yarn run clean && yarn run build-production && yarn run package",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:clean": "rm -rf dist-test"
+    "test:clean": "rm -rf dist-test",
+    "web-dev": "webpack-dev-server --hot --inline --open --port 3031"
   },
   "jest": {
     "transform": {
@@ -91,6 +92,7 @@
     "gl-matrix": "^3.1.0",
     "heic2any": "^0.0.3",
     "image-size": "^0.8.3",
+    "is-electron": "^2.2.0",
     "js-yaml": "^3.14.0",
     "justified-layout": "^4.0.0",
     "moment": "^2.26.0",
@@ -113,7 +115,6 @@
   },
   "optionalDependencies": {
     "libraw": "file:submodules/node-libraw"
-    
   },
   "devDependencies": {
     "@jest-runner/electron": "^3.0.0",

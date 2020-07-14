@@ -27,6 +27,7 @@ BackgroundClient.init()
 
 Promise
     .all([
+        
         BackgroundClient.fetchUiConfig(),
         BackgroundClient.fetchSettings(),
         BackgroundClient.waitForBackgroundReady(),

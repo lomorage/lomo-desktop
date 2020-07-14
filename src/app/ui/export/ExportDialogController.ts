@@ -1,4 +1,4 @@
-import notifier from 'node-notifier'
+// import notifier from 'node-notifier'
 
 import { msg } from 'common/i18n/i18n'
 import { bindMany } from 'common/util/LangUtil'
@@ -104,10 +104,10 @@ async function runExport(exportInfo: ExportInfo): Promise<void> {
 
     // Show done notification
 
-    notifier.notify({
-        title: 'Picturama',
-        message: photoCount === 1 ? msg('ExportDialog_done_one') : msg('ExportDialog_done_more', photoCount)
-    })
+    // notifier.notify({
+    //     title: 'Picturama',
+    //     message: photoCount === 1 ? msg('ExportDialog_done_one') : msg('ExportDialog_done_more', photoCount)
+    // })
 
     store.dispatch(closeExportAction())
 }

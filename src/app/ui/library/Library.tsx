@@ -2,7 +2,10 @@ import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { ipcRenderer } from 'electron'
+
+import isElectron from 'is-electron';
+
+// import { ipcRenderer } from 'electron'
 import { Button, NonIdealState, Spinner, MaybeElement, Icon, INonIdealStateProps } from '@blueprintjs/core'
 
 import { PhotoId, Photo, PhotoWork, PhotoSectionId, PhotoSectionById, isLoadedPhotoSection, PhotoDetail, PhotoFilterType, MetaData, ExifData } from 'common/CommonTypes'
@@ -103,12 +106,15 @@ export class Library extends React.Component<Props, State> {
         const isExportEnabled = props.isActive && props.selectedPhotoIds.length > 0
         const prevIsExportEnabled = prevProps.isActive && prevProps.selectedPhotoIds.length > 0
         if (isExportEnabled !== prevIsExportEnabled) {
-            ipcRenderer.send('toggleExportMenu', isExportEnabled)
-            if (isExportEnabled) {
-                ipcRenderer.on('exportClicked', this.openExport)
-            } else {
-                ipcRenderer.removeAllListeners('exportClicked')
+            if (!isElectron()) {
+                // ipcRenderer.send('toggleExportMenu', isExportEnabled)
+                // if (isExportEnabled) {
+                //     ipcRenderer.on('exportClicked', this.openExport)
+                // } else {
+                //     ipcRenderer.removeAllListeners('exportClicked')
+                // }
             }
+            
         }
     }
 
@@ -335,7 +341,10 @@ const Connected = connect<StateProps, DispatchProps, OwnProps, AppState>(
         movePhotosToTrash,
         restorePhotosFromTrash,
         startScanning: () => {
-            ipcRenderer.send('start-scanning')
+            if (!isElectron()) {
+                // ipcRenderer.send('start-scanning')
+            }
+            
         },
         ...bindActionCreators({
             setGridRowHeight: setGridRowHeightAction,

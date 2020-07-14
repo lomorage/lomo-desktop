@@ -37,20 +37,20 @@ const commonConfig = {
     // Must be 'source-map' or 'inline-source-map'
     // (see: https://webpack.js.org/loaders/less-loader/#sourcemaps)
     devtool: production ? false : 'source-map',
-    externals: (() => {
-        const modules = [ 'fs', 'net', 'os', 'readline', 'path' ]
-        let customExternals = {}
-        for (const module of modules) {
-            customExternals[module] = `(function() { var mod = require('${module}'); if (!mod.default) mod.default = mod; return mod; })()`
-        }
-        const externals = [
-            nodeExternals({
-                whitelist: [ /^font-awesome(\/|$)/ ]
-            }),
-            customExternals
-        ]
-        return externals
-    })(),
+    // externals: (() => {
+    //     const modules = [ 'fs', 'net', 'os', 'readline', 'path' ]
+    //     let customExternals = {}
+    //     for (const module of modules) {
+    //         customExternals[module] = `(function() { var mod = require('${module}'); if (!mod.default) mod.default = mod; return mod; })()`
+    //     }
+    //     const externals = [
+    //         // nodeExternals({
+    //         //     whitelist: [ /^font-awesome(\/|$)/ ]
+    //         // }),
+    //         customExternals
+    //     ]
+    //     return externals
+    // })(),
     plugins: commonPlugins
 }
 
@@ -82,8 +82,8 @@ let mmm = [
             entry = {
                 app: devServerEntry.concat([
                     './src/app/entry.tsx'
-                ]),
-                'test-ui': './src/test-ui/entry.tsx'
+                ])
+                // 'test-ui': './src/test-ui/entry.tsx'
             }
             if (!production) {
                 //entry['test-ui'] = devServerEntry.concat([
@@ -115,13 +115,13 @@ let mmm = [
                     use: useDevServer ?
                         [
                             { loader: 'style-loader', options: {
-                                sourceMap: true,
-                                singleton: true
+                                //sourceMap: true,
+                                //singleton: true
                                     // Ensures CSS is applied before JS is executed.
                                     // See: https://stackoverflow.com/questions/39400038/how-to-ensure-that-hot-css-loads-before-js-in-webpack-dev-server
                             } },
                             { loader: 'css-loader', options: { sourceMap: true, importLoaders: 2 } },
-                            { loader: 'less-loader', options: { sourceMap: true, noIeCompat: true } }
+                            { loader: 'less-loader', options: { sourceMap: true, /*noIeCompat: true*/ } }
                         ] :
                         [
                             MiniCssExtractPlugin.loader,

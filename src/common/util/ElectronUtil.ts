@@ -1,11 +1,18 @@
+import isElectron from 'is-electron'
 const process = (global as any).process
 
 
 export function isMainProcess(): boolean {
+    if (!isElectron()) {
+        return true
+    }
     return process && process.type === 'browser'
 }
 
 export function isRendererProcess(): boolean {
+    if (!isElectron()) {
+        return true
+    }
     return process && process.type === 'renderer'
 }
 
