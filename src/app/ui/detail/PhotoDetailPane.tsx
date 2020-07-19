@@ -1,5 +1,5 @@
 import isElectron from 'is-electron';
-// import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron'
 import classNames from 'classnames'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -83,7 +83,9 @@ export class PhotoDetailPane extends React.Component<Props, State> {
         if (props.isActive !== prevProps.isActive || state.mode !== prevState.mode) {
             if (!isElectron()) {
                 // ipcRenderer.send('toggleExportMenu', props.isActive && state.mode === 'view')
-            } 
+            } else {
+                ipcRenderer.send('toggleExportMenu', props.isActive && state.mode === 'view')
+            }
         }
     }
 

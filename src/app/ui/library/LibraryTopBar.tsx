@@ -1,5 +1,5 @@
 import isElectron from 'is-electron';
-// import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron'
 import classNames from 'classnames'
 import React from 'react'
 import { Button, MaybeElement, Alert } from '@blueprintjs/core'
@@ -55,6 +55,8 @@ export default class LibraryTopBar extends React.Component<Props, State> {
         this.setState({ showEmptyTrashAlert: false })
         if (!isElectron()) {
             // ipcRenderer.send('empty-trash', true)
+        } else {
+            ipcRenderer.send('empty-trash', true)
         }
     }
 

@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 
 import isElectron from 'is-electron';
 
-// import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron'
 import { Button, NonIdealState, Spinner, MaybeElement, Icon, INonIdealStateProps } from '@blueprintjs/core'
 
 import { PhotoId, Photo, PhotoWork, PhotoSectionId, PhotoSectionById, isLoadedPhotoSection, PhotoDetail, PhotoFilterType, MetaData, ExifData } from 'common/CommonTypes'
@@ -113,6 +113,13 @@ export class Library extends React.Component<Props, State> {
                 // } else {
                 //     ipcRenderer.removeAllListeners('exportClicked')
                 // }
+            } else {
+                ipcRenderer.send('toggleExportMenu', isExportEnabled)
+                if (isExportEnabled) {
+                    ipcRenderer.on('exportClicked', this.openExport)
+                } else {
+                    ipcRenderer.removeAllListeners('exportClicked')
+                }
             }
             
         }
@@ -343,6 +350,8 @@ const Connected = connect<StateProps, DispatchProps, OwnProps, AppState>(
         startScanning: () => {
             if (!isElectron()) {
                 // ipcRenderer.send('start-scanning')
+            } else {
+                ipcRenderer.send('start-scanning')
             }
             
         },

@@ -1,6 +1,6 @@
 import isElectron from 'is-electron';
 
-// import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron'
 
 import { UiConfig, Settings, PhotoSet, PhotoExportOptions, IpcErrorInfo, MetaData, ExifData } from 'common/CommonTypes'
 import { PhotoId, Photo, PhotoDetail, PhotoWork, PhotoFilter, PhotoSection, PhotoSectionId, Tag } from 'common/CommonTypes'
@@ -49,6 +49,18 @@ export default {
             //         }
             //     }
             // })
+        } else {
+            ipcRenderer.on('onBackgroundActionDone', (event, callId: number, error: IpcErrorInfo | null, result: any | null) => {
+                const callInfo = pendingCalls[callId]
+                delete pendingCalls[callId]
+                if (callInfo) {
+                    if (error) {
+                        callInfo.reject(decodeIpcError(error))
+                    } else {
+                        callInfo.resolve(result)
+                    }
+                }
+            })
         }
     },
 
@@ -169,6 +181,8 @@ async function callOnBackground(action: string, params: any = null): Promise<any
 
         if (!isElectron()) {
             // ipcRenderer.send('executeBackgroundAction', callId, action, params)
+        } else {
+            ipcRenderer.send('executeBackgroundAction', callId, action, params)
         }
     })
 }
